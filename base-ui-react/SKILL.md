@@ -54,6 +54,7 @@ pnpm add @base-ui-components/react
 ```
 
 **Why this matters:**
+
 - Single package contains all 27+ accessible components
 - No peer dependencies besides React
 - Tree-shakeable - only import what you need
@@ -117,6 +118,7 @@ export function App() {
 ```
 
 **CRITICAL:**
+
 - ✅ Always spread `{...props}` from render functions
 - ✅ Use `<Dialog.Portal>` to render outside DOM hierarchy
 - ✅ `Backdrop` and `Popup` are separate components (unlike Radix's combined `Overlay + Content`)
@@ -168,23 +170,19 @@ Base UI uses **render props** instead of Radix's **asChild** pattern. This provi
 ### Comparison
 
 **Radix UI (asChild)**:
-```tsx
-import * as Dialog from "@radix-ui/react-dialog";
 
-<Dialog.Trigger asChild>
+```tsx
+import * as Dialog from '@radix-ui/react-dialog'
+;<Dialog.Trigger asChild>
   <button>Open</button>
 </Dialog.Trigger>
 ```
 
 **Base UI (render prop)**:
-```tsx
-import { Dialog } from "@base-ui-components/react/dialog";
 
-<Dialog.Trigger
-  render={(props) => (
-    <button {...props}>Open</button>
-  )}
-/>
+```tsx
+import { Dialog } from '@base-ui-components/react/dialog'
+;<Dialog.Trigger render={(props) => <button {...props}>Open</button>} />
 ```
 
 **Key Difference**: Render props make prop spreading **explicit** (`{...props}`), while asChild does it **implicitly**.
@@ -196,6 +194,7 @@ import { Dialog } from "@base-ui-components/react/dialog";
 Components that float (Select, Popover, Tooltip) use the **Positioner** pattern:
 
 ### Without Positioner (Wrong)
+
 ```tsx
 // ❌ This won't position correctly
 <Popover.Root>
@@ -205,6 +204,7 @@ Components that float (Select, Popover, Tooltip) use the **Positioner** pattern:
 ```
 
 ### With Positioner (Correct)
+
 ```tsx
 // ✅ Positioner handles Floating UI positioning
 <Popover.Root>
@@ -258,10 +258,12 @@ These components position themselves:
 This skill prevents **10+** documented issues:
 
 ### Issue #1: Render Prop Not Spreading Props
+
 **Error**: Component doesn't respond to triggers, no accessibility attributes
 **Source**: https://github.com/mui/base-ui/issues/123 (common beginner mistake)
 **Why It Happens**: Forgetting to spread `{...props}` in render function
 **Prevention**:
+
 ```tsx
 // ❌ Wrong - props not applied
 <Trigger render={() => <button>Click</button>} />
@@ -271,10 +273,12 @@ This skill prevents **10+** documented issues:
 ```
 
 ### Issue #2: Missing Positioner Wrapper
+
 **Error**: Popup doesn't position correctly, appears at wrong location
 **Source**: https://github.com/mui/base-ui/issues/234
 **Why It Happens**: Direct use of Popup without Positioner for floating components
 **Prevention**:
+
 ```tsx
 // ❌ Wrong - no positioning
 <Popover.Root>
@@ -294,10 +298,12 @@ This skill prevents **10+** documented issues:
 ```
 
 ### Issue #3: Using align Instead of alignment
+
 **Error**: TypeScript error "Property 'align' does not exist"
 **Source**: Radix migration issue
 **Why It Happens**: Radix uses `align`, Base UI uses `alignment`
 **Prevention**:
+
 ```tsx
 // ❌ Wrong - Radix API
 <Positioner align="center" />
@@ -307,10 +313,12 @@ This skill prevents **10+** documented issues:
 ```
 
 ### Issue #4: Using asChild Pattern
+
 **Error**: "Property 'asChild' does not exist"
 **Source**: Radix migration issue
 **Why It Happens**: Attempting to use Radix's asChild pattern
 **Prevention**:
+
 ```tsx
 // ❌ Wrong - Radix pattern
 <Trigger asChild>
@@ -322,10 +330,12 @@ This skill prevents **10+** documented issues:
 ```
 
 ### Issue #5: Expecting Automatic Portal
+
 **Error**: Popup renders in wrong location in DOM
 **Source**: https://github.com/mui/base-ui/issues/345
 **Why It Happens**: Portal must be explicit in Base UI (unlike Radix)
 **Prevention**:
+
 ```tsx
 // ❌ Wrong - no Portal
 <Dialog.Root>
@@ -343,10 +353,12 @@ This skill prevents **10+** documented issues:
 ```
 
 ### Issue #6: Arrow Component Not Styled
+
 **Error**: Arrow is invisible
 **Source**: https://github.com/mui/base-ui/issues/456
 **Why It Happens**: Arrow requires explicit styling (no defaults)
 **Prevention**:
+
 ```tsx
 // ❌ Wrong - invisible arrow
 <Popover.Arrow />
@@ -360,10 +372,12 @@ This skill prevents **10+** documented issues:
 ```
 
 ### Issue #7: Content vs Popup Naming
+
 **Error**: "Property 'Content' does not exist on Dialog"
 **Source**: Radix migration issue
 **Why It Happens**: Radix uses `Content`, Base UI uses `Popup`
 **Prevention**:
+
 ```tsx
 // ❌ Wrong - Radix naming
 <Dialog.Content>...</Dialog.Content>
@@ -373,10 +387,12 @@ This skill prevents **10+** documented issues:
 ```
 
 ### Issue #8: Overlay vs Backdrop Naming
+
 **Error**: "Property 'Overlay' does not exist on Dialog"
 **Source**: Radix migration issue
 **Why It Happens**: Radix uses `Overlay`, Base UI uses `Backdrop`
 **Prevention**:
+
 ```tsx
 // ❌ Wrong - Radix naming
 <Dialog.Overlay />
@@ -386,10 +402,12 @@ This skill prevents **10+** documented issues:
 ```
 
 ### Issue #9: Disabled Button Tooltip Not Showing
+
 **Error**: Tooltip doesn't show on disabled buttons
 **Source**: https://github.com/mui/base-ui/issues/567
 **Why It Happens**: Disabled elements don't fire pointer events
 **Prevention**:
+
 ```tsx
 // ❌ Wrong - tooltip won't show
 <Tooltip.Root>
@@ -407,10 +425,12 @@ This skill prevents **10+** documented issues:
 ```
 
 ### Issue #10: Select with Empty String Value
+
 **Error**: Screen reader doesn't announce selected value
 **Source**: https://github.com/mui/base-ui/issues/678
 **Why It Happens**: Empty string breaks ARIA labeling
 **Prevention**:
+
 ```tsx
 // ❌ Wrong - empty string
 <Select.Option value="">Any</Select.Option>
@@ -450,21 +470,22 @@ This skill prevents **10+** documented issues:
 ### vite.config.ts (Full Example)
 
 ```typescript
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": "/src",
-    },
-  },
+      '@': '/src'
+    }
+  }
   // Base UI works with any Vite setup - no special config needed
-});
+})
 ```
 
 **Why these settings:**
+
 - Base UI has no special Vite requirements
 - Works with standard React plugin
 - Compatible with Tailwind v4, CSS Modules, Emotion, etc.
@@ -503,6 +524,7 @@ export default defineConfig({
 ```
 
 **Why these settings:**
+
 - Standard Vite + React TypeScript config
 - Base UI has excellent TypeScript support
 - Render prop pattern fully typed
@@ -749,6 +771,7 @@ Copy-paste ready component examples:
 - `templates/migration-example.tsx` - Side-by-side Radix vs Base UI comparison
 
 **Example Usage:**
+
 ```bash
 # Copy Dialog template to your project
 cp templates/Dialog.tsx src/components/Dialog.tsx
@@ -775,6 +798,7 @@ Automation helpers:
 - `scripts/check-base-ui-version.sh` - Version compatibility checker
 
 **Example Usage:**
+
 ```bash
 # Check for Base UI updates
 ./scripts/check-base-ui-version.sh
@@ -792,6 +816,7 @@ Automation helpers:
 Key changes when migrating:
 
 1. **asChild → render prop**
+
    ```tsx
    // Radix
    <Trigger asChild><button /></Trigger>
@@ -801,6 +826,7 @@ Key changes when migrating:
    ```
 
 2. **Add Positioner wrapper**
+
    ```tsx
    // Radix
    <Content side="top" />
@@ -817,6 +843,7 @@ Key changes when migrating:
    - `align` → `alignment`
 
 4. **Explicit Portal**
+
    ```tsx
    // Radix (automatic)
    <Portal><Content /></Portal>
@@ -837,18 +864,19 @@ Base UI works perfectly with Cloudflare Workers:
 ✅ **Edge-friendly** - Small bundle size
 
 Example Vite config for Workers:
+
 ```typescript
 // vite.config.ts
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import cloudflare from "@cloudflare/vite-plugin";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import cloudflare from '@cloudflare/vite-plugin'
 
 export default defineConfig({
   plugins: [react(), cloudflare()],
   build: {
-    outDir: "dist",
-  },
-});
+    outDir: 'dist'
+  }
+})
 ```
 
 ### Custom Styling Strategies
@@ -856,6 +884,7 @@ export default defineConfig({
 Base UI is **completely unstyled**. Choose your approach:
 
 **1. Tailwind CSS (Recommended)**
+
 ```tsx
 <Dialog.Popup
   render={(props) => (
@@ -867,10 +896,10 @@ Base UI is **completely unstyled**. Choose your approach:
 ```
 
 **2. CSS Modules**
-```tsx
-import styles from "./Dialog.module.css";
 
-<Dialog.Popup
+```tsx
+import styles from './Dialog.module.css'
+;<Dialog.Popup
   render={(props) => (
     <div {...props} className={styles.popup}>
       Content
@@ -880,22 +909,17 @@ import styles from "./Dialog.module.css";
 ```
 
 **3. Emotion/Styled Components**
+
 ```tsx
-import styled from "@emotion/styled";
+import styled from '@emotion/styled'
 
 const StyledPopup = styled.div`
   background: white;
   border-radius: 8px;
   padding: 24px;
-`;
+`
 
-<Dialog.Popup
-  render={(props) => (
-    <StyledPopup {...props}>
-      Content
-    </StyledPopup>
-  )}
-/>
+;<Dialog.Popup render={(props) => <StyledPopup {...props}>Content</StyledPopup>} />
 ```
 
 ### Accessibility Best Practices
@@ -908,6 +932,7 @@ Base UI handles accessibility automatically:
 ✅ **Screen reader** - Proper announcements
 
 **Always verify:**
+
 - Spread `{...props}` from render functions
 - Test with keyboard only
 - Test with screen reader (NVDA, JAWS, VoiceOver)
@@ -918,11 +943,13 @@ Base UI handles accessibility automatically:
 ## Dependencies
 
 **Required**:
+
 - `@base-ui-components/react@1.0.0-beta.4` - Core component library
 - `react@19.2.0+` - React 19 or later
 - `react-dom@19.2.0+` - React DOM
 
 **Optional**:
+
 - `@tailwindcss/vite@4.1.14` - Tailwind v4 for styling
 - `vite@6.0.0` - Build tool (recommended)
 
@@ -955,6 +982,7 @@ Base UI handles accessibility automatically:
 ```
 
 **Beta Stability Notes:**
+
 - Core API stable since beta.2
 - Breaking changes unlikely before v1.0
 - Monitor https://github.com/mui/base-ui/releases
@@ -971,6 +999,7 @@ This skill is based on production testing:
 - **Validation**: ✅ Works with Tailwind v4, Cloudflare Workers, React 19
 
 **Tested Scenarios:**
+
 - ✅ Vite + React + Tailwind v4
 - ✅ Cloudflare Workers deployment
 - ✅ TypeScript strict mode
@@ -982,7 +1011,9 @@ This skill is based on production testing:
 ## Troubleshooting
 
 ### Problem: Render prop component not responding to clicks
+
 **Solution**: Ensure you're spreading `{...props}`:
+
 ```tsx
 // ❌ Wrong
 <Trigger render={() => <button>Click</button>} />
@@ -992,7 +1023,9 @@ This skill is based on production testing:
 ```
 
 ### Problem: Popup appearing at wrong position
+
 **Solution**: Wrap in Positioner:
+
 ```tsx
 // ❌ Wrong
 <Popover.Popup />
@@ -1006,7 +1039,9 @@ This skill is based on production testing:
 ```
 
 ### Problem: TypeScript error "Property 'align' does not exist"
+
 **Solution**: Use `alignment` not `align`:
+
 ```tsx
 // ❌ Wrong (Radix)
 <Positioner align="center" />
@@ -1016,7 +1051,9 @@ This skill is based on production testing:
 ```
 
 ### Problem: Arrow is invisible
+
 **Solution**: Style the arrow explicitly:
+
 ```tsx
 // ❌ Wrong
 <Arrow />
@@ -1028,7 +1065,9 @@ This skill is based on production testing:
 ```
 
 ### Problem: Tooltip not showing on disabled button
+
 **Solution**: Wrap button in span:
+
 ```tsx
 // ❌ Wrong
 <Tooltip.Trigger render={(props) => <button {...props} disabled />} />
