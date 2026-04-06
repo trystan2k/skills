@@ -163,9 +163,3 @@ npx skills@latest add trystan2k/skills/basic-memory
 ```bash
 npx skills@latest add trystan2k/skills/skill-development
 ```
-
-**write-skill** — Create new agent skills with proper structure, progressive disclosure, and bundled resources. Use when user wants to create, write, or build a new skill.
-
-```bash
-npx skills@latest add trystan2k/skills/write-skill
-```
