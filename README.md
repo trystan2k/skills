@@ -169,3 +169,9 @@ npx skills@latest add trystan2k/skills/skill-development
 ```bash
 npx skills@latest add trystan2k/skills/memory-notes
 ```
+
+**handover** - Use when the user asks to create a handover, session handover, or context dump to pass to a fresh session. 
+
+```bash
+npx skills@latest add trystan2k/skills/handover
+```
