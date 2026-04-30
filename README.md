@@ -163,3 +163,9 @@ npx skills@latest add trystan2k/skills/basic-memory
 ```bash
 npx skills@latest add trystan2k/skills/skill-development
 ```
+
+**memory-notes** — Use when any agent must create development log notes.
+
+```bash
+npx skills@latest add trystan2k/skills/memory-notes
+```
