@@ -1,6 +1,7 @@
 ---
-name: typescript-modern
+name: typescript
 description: Modern TypeScript patterns, strict type safety, and runtime validation. Covers type-first development, interfaces, utility types, and Zod. Trigger: When writing TypeScript code (.ts, .tsx).
+license: MIT
 compatibility: OpenCode
 metadata:
   version: "1.0.0"
