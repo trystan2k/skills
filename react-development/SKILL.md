@@ -1,5 +1,5 @@
 ---
-name: react
+name: react-development
 description: Modern React 19 patterns and best practices. Covers Server Components, Hooks, Effects, and Refs. Trigger: When writing React components.
 license: MIT
 compatibility: OpenCode

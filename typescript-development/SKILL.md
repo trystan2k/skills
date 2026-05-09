@@ -1,5 +1,5 @@
 ---
-name: typescript
+name: typescript-development
 description: Modern TypeScript patterns, strict type safety, and runtime validation. Covers type-first development, interfaces, utility types, and Zod. Trigger: When writing TypeScript code (.ts, .tsx).
 license: MIT
 compatibility: OpenCode
