@@ -1,115 +1,144 @@
 ---
 name: typescript-development
-description: TanStack Start best practices for full-stack React applications. Server functions, middleware, SSR, authentication, and deployment patterns. Activate when building full-stack apps with TanStack Start.
+description: Modern TypeScript patterns, strict type safety, and runtime validation. Covers type-first development, interfaces, utility types, and Zod. Use when writing TypeScript code (.ts, .tsx).
 license: MIT
 compatibility: OpenCode
 metadata:
   version: "1.0.0"
   references:
-    - https://skills.sh/deckardger/tanstack-agent-skills/tanstack-start-best-practices
+    - https://www.typescriptlang.org/docs/handbook/intro.html
+    - https://zod.dev/
+    - https://skills.sh/0xbigboss/claude-code/typescript-best-practices
+    - https://github.com/Gentleman-Programming/Gentleman-Skills/blob/main/curated/typescript/SKILL.md
 ---
 
-# TanStack Start Best Practices
+# Modern TypeScript & Best Practices
 
-Comprehensive guidelines for implementing TanStack Start patterns in full-stack React applications. These rules cover server functions, middleware, SSR, authentication, and deployment.
+## 1. Core Principles
 
-## When to Apply
+### Type-First Development
+- **Workflow**: Define types/interfaces first, then implement logic.
+- **Strict Mode**: Always enabled. No implicit `any`.
+- **No `any`**: Use `unknown` for truly unknown types, or generics.
 
-- Creating server functions for data mutations
-- Setting up middleware for auth/logging
-- Configuring SSR and hydration
-- Implementing authentication flows
-- Handling errors across client/server boundary
-- Organizing full-stack code
-- Deploying to various platforms
+```typescript
+// ✅ Use unknown and validate
+function parse(input: unknown): User {
+  if (isUser(input)) return input;
+  throw new Error("Invalid input");
+}
 
-## Rule Categories by Priority
+// ❌ NEVER
+function parse(input: any): any { }
+```
 
-| Priority | Category | Rules | Impact |
-|----------|----------|-------|--------|
-| CRITICAL | Server Functions | 5 rules | Core data mutation patterns |
-| CRITICAL | Security | 4 rules | Prevents vulnerabilities |
-| HIGH | Middleware | 4 rules | Request/response handling |
-| HIGH | Authentication | 4 rules | Secure user sessions |
-| MEDIUM | API Routes | 1 rule | External endpoint patterns |
-| MEDIUM | SSR | 6 rules | Server rendering patterns |
-| MEDIUM | Error Handling | 3 rules | Graceful failure handling |
-| MEDIUM | Environment | 1 rule | Configuration management |
-| LOW | File Organization | 3 rules | Maintainable code structure |
-| LOW | Deployment | 2 rules | Production readiness |
+## 2. Type Safety Patterns
 
-## Quick Reference
+### Const Assertions & Discriminated Unions
+- **Const Assertions**: Use `as const` for literal values to infer specific types.
+- **Discriminated Unions**: Use a common field (like `status` or `type`) to distinguish states.
 
-### Server Functions (Prefix: `sf-`)
+```typescript
+// ✅ Const Assertion
+const ROLES = ["admin", "user", "guest"] as const;
+type Role = typeof ROLES[number]; // "admin" | "user" | "guest"
 
-- `sf-create-server-fn` — Use createServerFn for server-side logic
-- `sf-input-validation` — Always validate server function inputs
-- `sf-method-selection` — Choose appropriate HTTP method
-- `sf-error-handling` — Handle errors in server functions
-- `sf-response-headers` — Customize response headers when needed
+// ✅ Discriminated Union
+type RequestState<T> =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; data: T }
+  | { status: 'error'; error: Error };
+```
 
-### Security (Prefix: `sec-`)
+### Branded Types
+- Prevent mixing compatible primitive types (e.g., UserID vs OrderID).
 
-- `sec-validate-inputs` — Validate all user inputs with schemas
-- `sec-auth-middleware` — Protect routes with auth middleware
-- `sec-sensitive-data` — Keep secrets server-side only
-- `sec-csrf-protection` — Implement CSRF protection for mutations
+```typescript
+type UserId = string & { readonly __brand: 'UserId' };
+function createUserId(id: string): UserId { return id as UserId; }
+```
 
-### Middleware (Prefix: `mw-`)
+## 3. Interface Design
 
-- `mw-request-middleware` — Use request middleware for cross-cutting concerns
-- `mw-function-middleware` — Use function middleware for server functions
-- `mw-context-flow` — Properly pass context through middleware
-- `mw-composability` — Compose middleware effectively
+### Flat Interfaces
+- Avoid deep nesting. Extract nested objects into their own named interfaces.
 
-### Authentication (Prefix: `auth-`)
+```typescript
+// ✅ Named nested interface
+interface Address {
+  street: string;
+  city: string;
+}
+interface User {
+  id: string;
+  address: Address;
+}
 
-- `auth-session-management` — Implement secure session handling
-- `auth-route-protection` — Protect routes with beforeLoad
-- `auth-server-functions` — Verify auth in server functions
-- `auth-cookie-security` — Configure secure cookie settings
+// ❌ Inline nesting
+interface User {
+  address: { street: string; city: string };
+}
+```
 
-### API Routes (Prefix: `api-`)
+## 4. Runtime Validation (Zod)
 
-- `api-routes` — Create API routes for external consumers
+- **Source of Truth**: Define Zod schemas first, then infer TypeScript types.
+- **Validation**: Use `parse` at trust boundaries (API responses) and `safeParse` for user input.
 
-### SSR (Prefix: `ssr-`)
+```typescript
+import { z } from "zod";
 
-- `ssr-data-loading` — Load data appropriately for SSR
-- `ssr-hydration-safety` — Prevent hydration mismatches
-- `ssr-streaming` — Implement streaming SSR for faster TTFB
-- `ssr-selective` — Apply selective SSR when beneficial
-- `ssr-prerender` — Configure static prerendering and ISR
+const UserSchema = z.object({
+  id: z.string().uuid(),
+  email: z.string().email(),
+});
 
-### Environment (Prefix: `env-`)
+// Infer type from schema
+type User = z.infer<typeof UserSchema>;
 
-- `env-functions` — Use environment functions for configuration
+// Validate API response
+async function fetchUser(id: string): Promise<User> {
+  const res = await fetch(`/api/users/${id}`);
+  return UserSchema.parse(await res.json());
+}
+```
 
-### Error Handling (Prefix: `err-`)
+## 5. Utility Types & Guards
 
-- `err-server-errors` — Handle server function errors
-- `err-redirects` — Use redirects appropriately
-- `err-not-found` — Handle not-found scenarios
+### Built-in Utilities
+- `Pick<T, K>`, `Omit<T, K>`, `Partial<T>`, `Required<T>`, `Readonly<T>`, `Record<K, T>`.
+- `ReturnType<T>`, `Parameters<T>`.
 
-### File Organization (Prefix: `file-`)
+### Type Guards
+- Use user-defined type guards to narrow types.
 
-- `file-separation` — Separate server and client code
-- `file-functions-file` — Use .functions.ts pattern
-- `file-shared-validation` — Share validation schemas
+```typescript
+function isUser(value: unknown): value is User {
+  return typeof value === "object" && value !== null && "id" in value;
+}
+```
 
-### Deployment (Prefix: `deploy-`)
+## 6. Configuration
 
-- `deploy-env-config` — Configure environment variables
-- `deploy-adapters` — Choose appropriate deployment adapter
+- **Environment Variables**: Validate with Zod at startup.
 
-## How to Use
+```typescript
+const ConfigSchema = z.object({
+  API_URL: z.string().url(),
+  PORT: z.coerce.number().default(3000),
+});
+export const config = ConfigSchema.parse(process.env);
+```
 
-Each rule file in the `rules/` directory contains:
-1. **Explanation** — Why this pattern matters
-2. **Bad Example** — Anti-pattern to avoid
-3. **Good Example** — Recommended implementation
-4. **Context** — When to apply or skip this rule
+## Summary: Checklist
 
-## Full Reference
+1.  **Strict?** Is `strict: true` in `tsconfig.json`?
+2.  **No `any`?** Are you using `unknown` or specific types?
+3.  **Validation?** Are you validating external data with Zod?
+4.  **Unions?** Are you using discriminated unions for state?
+5.  **Consts?** Are you using `as const` for fixed values?
 
-See individual rule files in `rules/` directory for detailed guidance and code examples.
+## Specific tasks
+
+* **TypeScript module file naming** [references/module-file-naming.md](references/module-file-naming.md)
