@@ -63,7 +63,7 @@ Free-form markdown between the heading and the Observations section. This is the
 - Analysis, reasoning, and trade-offs considered
 - Context that someone (or an AI) needs to understand this note later
 
-Write complete, substantive prose. Basic Memory's search retrieves relevant chunks from note bodies, so longer, richer context makes notes more discoverable and more useful when found. Don't reduce everything to bullet points — tell the story.
+Write complete, substantive prose. Note's search retrieves relevant chunks from note bodies, so longer, richer context makes notes more discoverable and more useful when found. Don't reduce everything to bullet points — tell the story.
 
 ## Observations
 
