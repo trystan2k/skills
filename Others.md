@@ -11,6 +11,15 @@ Skill for building with the Astro web framework. Helps create Astro components a
 npx skills add https://github.com/astrolicious/agent-skills --skill astro
 ```
 
+### Best Practices
+
+***modern-web-guidance***
+Modern Web Guidance is a set of skills that embed web platform expertise, best practices, and browser compatibility data directly into your coding agents. [More info](https://goo.gle/modern-web-guidance)
+
+```bash
+npx skills add GoogleChrome/modern-web-guidance --skill modern-web-guidance
+```
+
 ## Backend
 
 ### API
